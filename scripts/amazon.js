@@ -1,10 +1,10 @@
-import { cart } from "../data/cart.js";
+import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 
 let productsHTML = '';
 
 products.forEach((product) => {
-  productsHTML += `
+	productsHTML += `
         <div class="product-container">
         <div class="product-image-container">
           <img class="product-image" src="${product.image}">
@@ -55,45 +55,37 @@ products.forEach((product) => {
     `;
 });
 
-document.querySelector('.js-products-grid').innerHTML = productsHTML;
+document.querySelector('.js-products-grid')
+	.innerHTML = productsHTML;
+
+function updateCartQuantity() {
+	let cartQuantity = 0;
+
+	cart.forEach((cartItem) => {
+		cartQuantity += cartItem.quantity;
+	});
+
+	document.querySelector('.js-cart-quantity')
+		.innerHTML = cartQuantity;
+}
+
+function showAddedMessage(productId) {
+	const addToCartNotificationEl = document.querySelector(`.js-added-to-cart-${productId}`);
+	addToCartNotificationEl.classList
+		.add('show-added-to-cart');
+
+	setTimeout(() => {
+		addToCartNotificationEl.classList
+			.remove('show-added-to-cart');
+	}, 2000);
+}
 
 document.querySelectorAll('.js-add-to-cart').forEach((button) => {
-  button.addEventListener('click', () => {
-    const { productId } = button.dataset;
-    const selectorElement = document.querySelector(`.js-quantity-selector-${productId}`);
-    const quantity = Number(selectorElement.value);
+	button.addEventListener('click', () => {
+		const { productId } = button.dataset;
 
-    let matchingItem;
-
-    cart.forEach((item) => {
-      if (productId === item.productId) {
-        matchingItem = item;
-      };
-    });
-
-    if (matchingItem) {
-      matchingItem.quantity += quantity;
-    } else {
-      cart.push({
-        productId,
-        quantity
-      });
-    };
-
-    let cartQuantity = 0;
-
-    cart.forEach((item) => {
-      cartQuantity += item.quantity;
-    });
-
-    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
-
-    const addToCartNotificationEl = document.querySelector(`.js-added-to-cart-${productId}`);
-    addToCartNotificationEl.classList.add('show-added-to-cart');
-
-    setTimeout(() => {
-      addToCartNotificationEl.classList.remove('show-added-to-cart');
-    }, 2000);
-
-  });
+		addToCart(productId);
+		updateCartQuantity();
+		showAddedMessage(productId);
+	});
 });
