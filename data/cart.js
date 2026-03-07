@@ -48,4 +48,26 @@ export function removeFromCart(productId) {
 
     cart = newCart;
     saveToStorage();
+};
+
+export function calculateCartQuantity() {
+    let cartQuantity = 0;
+
+    cart.forEach((cartItem) => {
+        cartQuantity += cartItem.quantity;
+    });
+
+    document.querySelector('.js-cart-quantity')
+        .innerHTML = cartQuantity;
+};
+
+export function showAddedMessage(productId) {
+    const addToCartNotificationEl = document.querySelector(`.js-added-to-cart-${productId}`);
+    addToCartNotificationEl.classList
+        .add('show-added-to-cart');
+
+    setTimeout(() => {
+        addToCartNotificationEl.classList
+            .remove('show-added-to-cart');
+    }, 2000);
 }
