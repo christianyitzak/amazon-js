@@ -70,4 +70,24 @@ export function showAddedMessage(productId) {
         addToCartNotificationEl.classList
             .remove('show-added-to-cart');
     }, 2000);
+};
+
+export function updateQuantity(productId, newQuantity) {
+    let matchingProduct;
+
+    cart.forEach((cartItem) => {
+        if (cartItem.productId === productId) {
+            matchingProduct = cartItem;
+        };
+    });
+
+    if (matchingProduct) {
+        matchingProduct.quantity += newQuantity;
+        document.querySelector(`.js-quantity-product-${productId}`)
+            .innerHTML = matchingProduct.quantity;
+    };
+
+    saveToStorage();
+    calculateCartQuantity();
+
 }
